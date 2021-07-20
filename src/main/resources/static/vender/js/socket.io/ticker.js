@@ -74,6 +74,14 @@ let viewTradeTicker2 = (datas) => {
     let colors = (datas.ask_bid == "ASK") ? "danger" : "primary";
     let askbid = (datas.ask_bid == "ASK") ? "매수" : "매도";
 
+    if (datas.ask_bid == "ASK") {
+        example4(261.6, 'sine');
+        let o = setTimeout(example4, 200, 440.0, 'sine');
+    } else {
+        example4(440.0, 'sine');
+        let o = setTimeout(example4, 200, 261.6, 'sine');
+    }
+
     let template = `
         <li class="list-group-item list-group-item-${colors}">
             <div class="d-flex">
@@ -214,4 +222,19 @@ function getRSI() {
     var RS = AU / AD;
 
     return (100 - (100 / (1 + RS))).toFixed(2);
+}
+
+var context = new AudioContext();
+var o = null;
+var g = null;
+
+function example4(frequency, type) {
+    o = context.createOscillator()
+    g = context.createGain()
+    o.type = type
+    o.connect(g)
+    o.frequency.value = frequency
+    g.connect(context.destination)
+    o.start(0)
+    g.gain.exponentialRampToValueAtTime(0.00001, context.currentTime + 1)
 }
