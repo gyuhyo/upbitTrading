@@ -71,7 +71,7 @@ tickerSocket.onerror = ((e) => {
 
 let viewTradeTicker2 = (datas) => {
 
-    let colors = (datas.ask_bid == "ASK") ? "danger" : "primary";
+    let colors = (datas.ask_bid == "ASK") ? "success" : "danger";
     let askbid = (datas.ask_bid == "ASK") ? "매수" : "매도";
 
     if (datas.ask_bid == "ASK") {
