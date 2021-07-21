@@ -364,7 +364,7 @@
                     $(data).attr("aria-valuenow", gage);
                     $(data).css("width", gage + "%");
 
-                    $(data).text(useMin + "분 " + useSec + "초 경과");
+                    $(data).text((5-useMin) + "분 " + (60-useSec) + "초 남음");
 
                     if ($(data).text() == "15분 0초 경과") {
                         $(data).closest(".card").fadeOut().remove();
