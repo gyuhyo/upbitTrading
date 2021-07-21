@@ -41,7 +41,7 @@ tickerSocket.onmessage = ((data) => {
         return n.market == arrToJson.code;
     });
 
-    if (totalPrice > 30000000) {
+    if (totalPrice > 20000000) {
 
         Utils.getHtmlFromWeb(arrToJson.code);
         CoinJson = JSON.parse(CoinList);
@@ -148,10 +148,10 @@ let viewTradeTicker2 = (datas) => {
             </div>
             <div class="card-footer text-muted">
                 <div class="d-flex progress">
-                    <div class="me-auto progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%">
+                    <div class="me-auto progress-bar progress-bar-striped progress-bar-animated bg-success askProgress" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%">
                         매수 시그널 50%
                     </div>
-                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger bidProgress" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%">
                         매도 시그널 50%
                     </div>
                 </div>
@@ -184,6 +184,22 @@ let viewTradeTicker2 = (datas) => {
         $(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-text").find(".bbt").text(datas.bbt);
         $(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-text").find(".bbb").text(datas.bbb);
     }
+
+    let totalPrice = parseFloat($(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-title").attr("data-total-price"));
+    let askAddPer = totalPrice / 20000000;
+    let nowAskProgress = parseFloat($(document).find("#" + datas.code + "-Signal").closest(".card").find(".askProgress").attr("aria-valuenow"));
+    let nowBidProgress = parseFloat($(document).find("#" + datas.code + "-Signal").closest(".card").find(".bidProgress").attr("aria-valuenow"));
+
+    let resultAskProgress = (nowAskProgress + askAddPer).toFixed(2);
+    let resultBidProgress = (nowBidProgress - askAddPer).toFixed(2);
+
+    $(document).find("#" + datas.code + "-Signal").closest(".card").find(".askProgress").attr("aria-valuenow", resultAskProgress);
+    $(document).find("#" + datas.code + "-Signal").closest(".card").find(".bidProgress").attr("aria-valuenow", resultBidProgress);
+    $(document).find("#" + datas.code + "-Signal").closest(".card").find(".askProgress").css("width", resultAskProgress + "%");
+    $(document).find("#" + datas.code + "-Signal").closest(".card").find(".bidProgress").css("width", resultBidProgress + "%");
+    $(document).find("#" + datas.code + "-Signal").closest(".card").find(".askProgress").text("매수 시그널 " + resultAskProgress + "%");
+    $(document).find("#" + datas.code + "-Signal").closest(".card").find(".bidProgress").text("매도 시그널 " + resultBidProgress + "%");
+
 
     $("#upbitWhaleUpdatedTime").text("lastUpdated " + fullDate);
 }
@@ -221,7 +237,7 @@ let numberToKorean2 = (number) => {
 let Utils = {
     getHtmlFromWeb: (CoinCode) => {
         $.ajax({
-            url: "https://api.upbit.com/v1/candles/minutes/5?market=" + CoinCode +"&count=200",
+            url: "https://api.upbit.com/v1/candles/minutes/15?market=" + CoinCode +"&count=200",
             type: "get",
             dataType: "text",
             async: false,

@@ -361,6 +361,10 @@
                     console.log(useMin + " " + useSec);
 
                     $(data).text(useMin + "분 " + useSec + "초 경과");
+
+                    if ($(data).text() == "15분 0초 경과") {
+                        $(data).closest(".card").fadeOut().remove();
+                    }
                 });
             }, 1000);
         });
