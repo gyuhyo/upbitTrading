@@ -60,6 +60,21 @@ tickerSocket.onmessage = ((data) => {
         }
 
         viewTradeTicker2(datas);
+    } else {
+        let datas = {
+            "code": arrToJson.code,
+            "markets": marketKoreanName[0].korean_name, // 마켓
+            "trade": numberWithComma(arrToJson.trade_price), // 현재가
+            "totalPrice": numberToKorean2(totalPrice),
+            "price": totalPrice,
+            "ask_bid": arrToJson.ask_bid,
+            "rsi": '-',
+            "bbt": '-',
+            "bbb": '-'
+        }
+        if (datas.price > 100000000) {
+            viewTradeTicker3(datas);
+        }
     }
 });
 
@@ -138,35 +153,37 @@ let viewTradeTicker2 = (datas) => {
     let accuratePrice = (datas.ask_bid == "ASK") ? datas.price : 0 - datas.price;
 
     let signalTemplate = `
-        <div class="card text-center">
-            <div class="card-header">
-                [${datas.markets}]
-            </div>
-            <div class="card-body">
-                <h5 class="card-title" data-total-price="${accuratePrice}">누적 ${numberToKorean2(accuratePrice)}</h5>
-                <p class="card-text text-secondary">RSI <span class="rsi">${datas.rsi}</span>&#9;|&#9;BB上 <span class="bbt">${datas.bbt}</span>&#9;|&#9;BB下 <span class="bbb">${datas.bbb}</span></p>
-            </div>
-            <div class="card-footer text-muted">
-                <div class="d-flex progress">
-                    <div class="me-auto progress-bar progress-bar-striped progress-bar-animated bg-success askProgress" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%">
-                        매수 시그널 50%
-                    </div>
-                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger bidProgress" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%">
-                        매도 시그널 50%
+        <div class="col-3">
+            <div class="card text-center">
+                <div class="card-header">
+                    [${datas.markets}]
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title" data-total-price="${accuratePrice}">${numberToKorean2(accuratePrice)}</h5>
+                    <p class="card-text text-secondary">RSI <span class="rsi">${datas.rsi}</span><!--&#9;|&#9;BB上 <span class="bbt">${datas.bbt}</span>&#9;|&#9;BB下 <span class="bbb">${datas.bbb}</span>--></p>
+                </div>
+                <div class="card-footer text-muted">
+                    <div class="d-flex progress">
+                        <div class="me-auto progress-bar progress-bar-striped progress-bar-animated bg-success askProgress" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%">
+                            50%
+                        </div>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger bidProgress" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%">
+                            50%
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="card-footer text-muted">
-                <div class="progress">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-striped timeouts"
-                         id="${datas.code}-Signal"
-                         role="progressbar"
-                         aria-valuenow="100"
-                         aria-valuemin="0"
-                         aria-valuemax="100"
-                         style="width: 100%"
-                         data-start-time="${fullDate}">
-                        경과 시간 00분 00초
+                <div class="card-footer text-muted">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-striped timeouts"
+                             id="${datas.code}-Signal"
+                             role="progressbar"
+                             aria-valuenow="100"
+                             aria-valuemin="0"
+                             aria-valuemax="100"
+                             style="width: 100%"
+                             data-start-time="${fullDate}">
+                            경과 시간 00분 00초
+                        </div>
                     </div>
                 </div>
             </div>
@@ -179,29 +196,114 @@ let viewTradeTicker2 = (datas) => {
         let totalPrice = parseFloat($(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-title").attr("data-total-price"));
         let resultPrice = totalPrice + accuratePrice;
         $(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-title").attr("data-total-price", resultPrice);
-        $(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-title").text("누적 " + numberToKorean2(resultPrice));
+        $(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-title").text(numberToKorean2(resultPrice));
         $(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-text").find(".rsi").text(datas.rsi);
-        $(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-text").find(".bbt").text(datas.bbt);
-        $(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-text").find(".bbb").text(datas.bbb);
+        //$(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-text").find(".bbt").text(datas.bbt);
+        //$(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-text").find(".bbb").text(datas.bbb);
     }
 
     let totalPrice = parseFloat($(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-title").attr("data-total-price"));
-    let askAddPer = totalPrice / 20000000;
+    let askAddPer = 50 / 1000000000 * totalPrice;
     let nowAskProgress = parseFloat($(document).find("#" + datas.code + "-Signal").closest(".card").find(".askProgress").attr("aria-valuenow"));
     let nowBidProgress = parseFloat($(document).find("#" + datas.code + "-Signal").closest(".card").find(".bidProgress").attr("aria-valuenow"));
 
-    let resultAskProgress = (nowAskProgress + askAddPer).toFixed(2);
-    let resultBidProgress = (nowBidProgress - askAddPer).toFixed(2);
+    let resultAskProgress = (50 - askAddPer).toFixed(2);
+    let resultBidProgress = (50 + askAddPer).toFixed(2);
 
     $(document).find("#" + datas.code + "-Signal").closest(".card").find(".askProgress").attr("aria-valuenow", resultAskProgress);
     $(document).find("#" + datas.code + "-Signal").closest(".card").find(".bidProgress").attr("aria-valuenow", resultBidProgress);
     $(document).find("#" + datas.code + "-Signal").closest(".card").find(".askProgress").css("width", resultAskProgress + "%");
     $(document).find("#" + datas.code + "-Signal").closest(".card").find(".bidProgress").css("width", resultBidProgress + "%");
-    $(document).find("#" + datas.code + "-Signal").closest(".card").find(".askProgress").text("매수 시그널 " + resultAskProgress + "%");
-    $(document).find("#" + datas.code + "-Signal").closest(".card").find(".bidProgress").text("매도 시그널 " + resultBidProgress + "%");
+    $(document).find("#" + datas.code + "-Signal").closest(".card").find(".askProgress").text(resultAskProgress + "%");
+    $(document).find("#" + datas.code + "-Signal").closest(".card").find(".bidProgress").text(resultBidProgress + "%");
 
 
     $("#upbitWhaleUpdatedTime").text("lastUpdated " + fullDate);
+}
+
+let viewTradeTicker3 = (datas) => {
+
+    let date = new Date();
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    month = month >= 10 ? month : '0' + month
+    let day = date.getDate();
+    day = day >= 10 ? day : '0' + day
+    let hour = date.getHours();
+    hour = hour >= 10 ? hour : '0' + hour
+    let min = date.getMinutes();
+    min = min >= 10 ? min : '0' + min
+    let sec = date.getSeconds();
+    sec = sec >= 10 ? sec : '0' + sec
+
+    let fullDate = year + "-" + month + "-" + day + " " + hour + ":" + min + ":" + sec;
+
+    let accuratePrice = (datas.ask_bid == "ASK") ? datas.price : 0 - datas.price;
+
+    let signalTemplate = `
+        <div class="col-3">
+            <div class="card text-center">
+                <div class="card-header">
+                    [${datas.markets}]
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title" data-total-price="${accuratePrice}">${numberToKorean2(accuratePrice)}</h5>
+                    <p class="card-text text-secondary">RSI <span class="rsi">${datas.rsi}</span><!--&#9;|&#9;BB上 <span class="bbt">${datas.bbt}</span>&#9;|&#9;BB下 <span class="bbb">${datas.bbb}</span>--></p>
+                </div>
+                <div class="card-footer text-muted">
+                    <div class="d-flex progress">
+                        <div class="me-auto progress-bar progress-bar-striped progress-bar-animated bg-success askProgress" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%">
+                            50%
+                        </div>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger bidProgress" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%">
+                            50%
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-muted">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-striped timeouts"
+                             id="${datas.code}-Signal"
+                             role="progressbar"
+                             aria-valuenow="100"
+                             aria-valuemin="0"
+                             aria-valuemax="100"
+                             style="width: 100%"
+                             data-start-time="${fullDate}">
+                            경과 시간 00분 00초
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    if ($(document).find("#" + datas.code + "-Signal").length <= 0) {
+        $("#askBidSignal").append(signalTemplate);
+    } else {
+        let totalPrice = parseFloat($(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-title").attr("data-total-price"));
+        let resultPrice = totalPrice + accuratePrice;
+        $(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-title").attr("data-total-price", resultPrice);
+        $(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-title").text(numberToKorean2(resultPrice));
+        $(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-text").find(".rsi").text(datas.rsi);
+        //$(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-text").find(".bbt").text(datas.bbt);
+        //$(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-text").find(".bbb").text(datas.bbb);
+    }
+
+    let totalPrice = parseFloat($(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-title").attr("data-total-price"));
+    let askAddPer = 50 / 1000000000 * totalPrice;
+    let nowAskProgress = parseFloat($(document).find("#" + datas.code + "-Signal").closest(".card").find(".askProgress").attr("aria-valuenow"));
+    let nowBidProgress = parseFloat($(document).find("#" + datas.code + "-Signal").closest(".card").find(".bidProgress").attr("aria-valuenow"));
+
+    let resultAskProgress = (50 - askAddPer).toFixed(2);
+    let resultBidProgress = (50 + askAddPer).toFixed(2);
+
+    $(document).find("#" + datas.code + "-Signal").closest(".card").find(".askProgress").attr("aria-valuenow", resultAskProgress);
+    $(document).find("#" + datas.code + "-Signal").closest(".card").find(".bidProgress").attr("aria-valuenow", resultBidProgress);
+    $(document).find("#" + datas.code + "-Signal").closest(".card").find(".askProgress").css("width", resultAskProgress + "%");
+    $(document).find("#" + datas.code + "-Signal").closest(".card").find(".bidProgress").css("width", resultBidProgress + "%");
+    $(document).find("#" + datas.code + "-Signal").closest(".card").find(".askProgress").text(resultAskProgress + "%");
+    $(document).find("#" + datas.code + "-Signal").closest(".card").find(".bidProgress").text(resultBidProgress + "%");
 }
 
 let numberToKorean2 = (number) => {
@@ -217,6 +319,8 @@ let numberToKorean2 = (number) => {
             resultString = (number / 10000000).toFixed(0) + "천";
         } else if (number >= 1000000) {
             resultString = (number / 1000000).toFixed(0) + "백";
+        } else if (number >= 100000) {
+            resultString = (number / 100000).toFixed(0) + "십";
         }
     } else {
         number = Math.abs(number);
@@ -228,6 +332,8 @@ let numberToKorean2 = (number) => {
             resultString = 0 - (number / 10000000).toFixed(0) + "천";
         } else if (number >= 1000000) {
             resultString = 0 - (number / 1000000).toFixed(0) + "백";
+        } else if (number >= 100000) {
+            resultString = (number / 100000).toFixed(0) + "백";
         }
     }
 
@@ -342,7 +448,7 @@ function example4(frequency, type) {
 
 function notify(msg) {
     if (Notification.permission !== 'granted') {
-        alert('notification is disabled');
+        //alert('notification is disabled');
     }
     else {
         var notification = new Notification('업비트!! 큰 고래 알림!!!', {

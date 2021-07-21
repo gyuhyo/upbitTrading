@@ -251,8 +251,18 @@
                                     <p class="m-0" style="margin-left: 7px !important; font-size: 0.7em;">매수/매도 시그널</p>
                                 </h5>
                             </div>
+                            <div class="p2" style="width: 20em">
+                                <div class="d-flex progress">
+                                    <div class="me-auto progress-bar progress-bar-striped progress-bar-animated bg-success askProgress" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%">
+                                        매수 시그널
+                                    </div>
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger bidProgress" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%">
+                                        매도 시그널
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="p-3 shadow-lg rounded" style="background-color: #1b1d21; height: 614px; overflow-y: overlay;" id="askBidSignal">
+                        <div class="row p-3 shadow-lg g-2 rounded" style="margin-top: 0px; background-color: #1b1d21; height: 614px; overflow-y: overlay;" id="askBidSignal">
 
 
 
@@ -363,10 +373,13 @@
 
                     $(data).attr("aria-valuenow", gage);
                     $(data).css("width", gage + "%");
+                    if (parseFloat($(data).attr("aria-valuenow")) <= 30) {
+                        $(data).animate({"color":"black"});
+                    }
 
                     $(data).text((14-useMin) + "분 " + (60-useSec) + "초 남음");
 
-                    if ($(data).text() == "0분 0초 남음") {
+                    if (parseFloat($(data).attr("aria-valuenow")) <= 0) {
                         $(data).closest(".card").fadeOut().remove();
                     }
                 });
