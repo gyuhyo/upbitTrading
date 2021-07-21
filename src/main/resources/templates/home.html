@@ -364,9 +364,9 @@
                     $(data).attr("aria-valuenow", gage);
                     $(data).css("width", gage + "%");
 
-                    $(data).text((5-useMin) + "분 " + (60-useSec) + "초 남음");
+                    $(data).text((14-useMin) + "분 " + (60-useSec) + "초 남음");
 
-                    if ($(data).text() == "15분 0초 경과") {
+                    if ($(data).text() == "0분 0초 남음") {
                         $(data).closest(".card").fadeOut().remove();
                     }
                 });
