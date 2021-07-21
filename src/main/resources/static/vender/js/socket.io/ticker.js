@@ -5,6 +5,7 @@ let krwMarkets = [];
 let markets = [];
 let CoinJson;
 let CoinList;
+let cardSound = true;
 
 $.ajax({
     url: "https://api.upbit.com/v1/market/all?isDetails=false",
@@ -20,8 +21,6 @@ $.ajax({
 krwMarkets.forEach((v, k) => {
     markets.push(v.market);
 });
-
-console.log(markets);
 
 let ioData =  JSON.stringify([{"ticket":"testasdasd"},{"type":"trade","codes":markets}]);
 
@@ -53,13 +52,12 @@ tickerSocket.onmessage = ((data) => {
             "markets": marketKoreanName[0].korean_name, // 마켓
             "trade": numberWithComma(arrToJson.trade_price), // 현재가
             "totalPrice": numberToKorean2(totalPrice),
+            "price": totalPrice,
             "ask_bid": arrToJson.ask_bid,
             "rsi": CoinMovings[2],
             "bbt": CoinMovings[0],
             "bbb": CoinMovings[1]
         }
-
-        console.log(datas);
 
         viewTradeTicker2(datas);
     }
@@ -74,12 +72,36 @@ let viewTradeTicker2 = (datas) => {
     let colors = (datas.ask_bid == "ASK") ? "success" : "danger";
     let askbid = (datas.ask_bid == "ASK") ? "매수" : "매도";
 
-    if (datas.ask_bid == "ASK") {
-        example4(261.6, 'sine');
-        let o = setTimeout(example4, 200, 440.0, 'sine');
-    } else {
-        example4(440.0, 'sine');
-        let o = setTimeout(example4, 200, 261.6, 'sine');
+    if (cardSound) {
+        if (datas.ask_bid == "ASK") {
+            example4(261.6, 'sine');
+            let o = setTimeout(example4, 200, 440.0, 'sine');
+        } else {
+            example4(440.0, 'sine');
+            let o = setTimeout(example4, 200, 261.6, 'sine');
+        }
+    }
+
+    let tickerCardLength = $("#upbitWhale").find("li").length;
+    if (tickerCardLength >= 50) {
+        $("#upbitWhale").find("li").last().remove();
+    }
+
+    if (datas.price > 50000000) {
+        let msg = `[${datas.markets}]\n\n체결가 ${datas.trade}원에 ${datas.totalPrice} ${askbid}`;
+        $(".toast-body").text(msg);
+        notify(msg);
+
+        $("#toast_container").css("z-index", "9999");
+        $("#toast1").toast("show");
+        $("#toast1").toast("show");
+        $("#toast1").toast("show");
+        $("#toast1").toast("show");
+        $("#toast1").toast("show");
+
+        setTimeout(() => {
+            $("#toast_container").css("z-index", "-1");
+        }, 6000);
     }
 
     let template = `
@@ -125,9 +147,9 @@ let numberToKorean2 = (number) => {
     } else if (number >= 100000000) {
         resultString = (number / 100000000).toFixed(0) + "억";
     } else if (number >= 10000000) {
-        resultString = (number / 10000000).toFixed(0) + "천만";
+        resultString = (number / 10000000).toFixed(0) + "천";
     } else if (number >= 1000000) {
-        resultString = (number / 1000000).toFixed(0) + "백만";
+        resultString = (number / 1000000).toFixed(0) + "백";
     }
 
     return resultString;
@@ -141,7 +163,6 @@ let Utils = {
             dataType: "text",
             async: false,
             success: (data) => {
-                console.log(data);
                 CoinList = data;
             }
         });
@@ -237,4 +258,20 @@ function example4(frequency, type) {
     g.connect(context.destination)
     o.start(0)
     g.gain.exponentialRampToValueAtTime(0.00001, context.currentTime + 1)
+}
+
+function notify(msg) {
+    if (Notification.permission !== 'granted') {
+        alert('notification is disabled');
+    }
+    else {
+        var notification = new Notification('업비트!! 큰 고래 알림!!!', {
+            icon: 'https://www.pngitem.com/pimgs/m/116-1166875_icon-megaphone-marketing-icon-transparent-background-hd-png.png',
+            body: msg,
+        });
+
+        notification.onclick = function () {
+            window.open('http://localhost:8080/');
+        };
+    }
 }

@@ -20,6 +20,7 @@ socket.onmessage = ((data) => {
         "markets": arrToJson.code, // 마켓
         "trade": numberWithComma(arrToJson.trade_price), // 현재가
         "signed_change_price": numberWithComma(arrToJson.signed_change_price), // 전일대비
+        "change_price": arrToJson.change_price, // 부호없는 전일 대비
         "signed_change_rate": (arrToJson.signed_change_rate * 100).toFixed(2), // 등락률
         "acc_trade_price": numberWithComma((arrToJson.acc_trade_price / 1000000).toFixed(0)), // 거래량
         "ask_bid": arrToJson.ask_bid
@@ -34,7 +35,9 @@ socket.onerror = ((e) => {
 
 let viewTradeTicker = (datas) => {
     $("#" + datas.markets + "-CARD").find(".trade_price").text(datas.trade + " (" + datas.signed_change_rate + "%)");
-    $("#" + datas.markets + "-CARD").find(".closing_trade").text("전일대비 " + (datas.signed_change_price < 1000) ? datas.signed_change_price + ".00" : datas.signed_change_price);
+    console.log(datas.markets + ": " + datas.change_price);
+    let scp = (Number(datas.change_price) < 1000) ? datas.signed_change_price + ".00" : datas.signed_change_price;
+    $("#" + datas.markets + "-CARD").find(".closing_trade").text("전일대비 " + scp);
     $("#" + datas.markets + "-CARD").find(".price_volume").text(datas.acc_trade_price + "백만");
 
 
