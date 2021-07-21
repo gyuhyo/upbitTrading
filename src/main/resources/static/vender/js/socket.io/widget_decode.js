@@ -35,7 +35,6 @@ socket.onerror = ((e) => {
 
 let viewTradeTicker = (datas) => {
     $("#" + datas.markets + "-CARD").find(".trade_price").text(datas.trade + " (" + datas.signed_change_rate + "%)");
-    console.log(datas.markets + ": " + datas.change_price);
     let scp = (Number(datas.change_price) < 1000) ? datas.signed_change_price + ".00" : datas.signed_change_price;
     $("#" + datas.markets + "-CARD").find(".closing_trade").text("전일대비 " + scp);
     $("#" + datas.markets + "-CARD").find(".price_volume").text(datas.acc_trade_price + "백만");
