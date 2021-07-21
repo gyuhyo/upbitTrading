@@ -358,7 +358,11 @@
                     let useMin = timeGap.getMinutes();
                     let useSec = timeGap.getSeconds();
 
-                    console.log(useMin + " " + useSec);
+                    let fullSec = (useMin * 60) + useSec;
+                    let gage = 100 - (100/900) * fullSec;
+
+                    $(data).attr("aria-valuenow", gage);
+                    $(data).css("width", gage + "%");
 
                     $(data).text(useMin + "분 " + useSec + "초 경과");
 
