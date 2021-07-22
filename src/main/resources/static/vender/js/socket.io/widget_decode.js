@@ -34,17 +34,18 @@ socket.onerror = ((e) => {
 });
 
 let viewTradeTicker = (datas) => {
+    if ($("#" + datas.markets + "-CARD").find(".trade_price").text() != (datas.trade + " (" + datas.signed_change_rate + "%)").toString()) {
+        if (datas.ask_bid == "ASK") {
+            $("#" + datas.markets + "-CARD").find(".card").animate({"background-color": "#41AF39"}, 500);
+        } else {
+            $("#" + datas.markets + "-CARD").find(".card").animate({"background-color": "#EB539E"}, 500);
+        }
+    }
+
     $("#" + datas.markets + "-CARD").find(".trade_price").text(datas.trade + " (" + datas.signed_change_rate + "%)");
     let scp = (Number(datas.change_price) < 1000) ? datas.signed_change_price + ".00" : datas.signed_change_price;
     $("#" + datas.markets + "-CARD").find(".closing_trade").text("전일대비 " + scp);
     $("#" + datas.markets + "-CARD").find(".price_volume").text(datas.acc_trade_price + "백만");
-
-
-    if (datas.ask_bid == "ASK") {
-        $("#" + datas.markets + "-CARD").find(".card").animate({"background-color": "#41AF39"}, 500 );
-    } else {
-        $("#" + datas.markets + "-CARD").find(".card").animate({"background-color": "#EB539E"}, 500 );
-    }
 }
 
 let numberWithComma = (n) => {

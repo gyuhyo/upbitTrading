@@ -41,6 +41,21 @@ tickerSocket.onmessage = ((data) => {
         return n.market == arrToJson.code;
     });
 
+    if ($(document).find("#" + arrToJson.code + "-Signal").length > 0) {
+        if ($(document).find("#" + arrToJson.code + "-Signal").closest(".card").find(".trade_price").text().toString() != arrToJson.trade_price.toString()) {
+            if (arrToJson.ask_bid == "ASK") {
+                $(document).find("#" + arrToJson.code + "-Signal").closest(".card").animate({"background-color": "#d1e7dd"}, 500);
+
+            } else {
+                $(document).find("#" + arrToJson.code + "-Signal").closest(".card").animate({"background-color": "#f8d7da"}, 500);
+            }
+
+            //$(document).find("#" + arrToJson.code + "-Signal").closest(".card").animate({"background-color": "#fff"}, 500);
+        }
+
+        $(document).find("#" + arrToJson.code + "-Signal").closest(".card").find(".trade_price").text(numberWithComma(arrToJson.trade_price));
+    }
+
     if (totalPrice > 20000000) {
 
         Utils.getHtmlFromWeb(arrToJson.code);
@@ -153,14 +168,14 @@ let viewTradeTicker2 = (datas) => {
     let accuratePrice = (datas.ask_bid == "ASK") ? datas.price : 0 - datas.price;
 
     let signalTemplate = `
-        <div class="col-3">
+        <div class="col-3 card-container">
             <div class="card text-center">
                 <div class="card-header">
                     [${datas.markets}]
                 </div>
                 <div class="card-body">
                     <h5 class="card-title" data-total-price="${accuratePrice}">${numberToKorean2(accuratePrice)}</h5>
-                    <p class="card-text text-secondary">RSI <span class="rsi">${datas.rsi}</span><!--&#9;|&#9;BB上 <span class="bbt">${datas.bbt}</span>&#9;|&#9;BB下 <span class="bbb">${datas.bbb}</span>--></p>
+                    <p class="card-text text-secondary">현재가<br><span class="trade_price">${datas.trade}</span><!--&#9;|&#9;BB上 <span class="bbt">${datas.bbt}</span>&#9;|&#9;BB下 <span class="bbb">${datas.bbb}</span>--></p>
                 </div>
                 <div class="card-footer text-muted">
                     <div class="d-flex progress">
@@ -197,9 +212,7 @@ let viewTradeTicker2 = (datas) => {
         let resultPrice = totalPrice + accuratePrice;
         $(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-title").attr("data-total-price", resultPrice);
         $(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-title").text(numberToKorean2(resultPrice));
-        $(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-text").find(".rsi").text(datas.rsi);
-        //$(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-text").find(".bbt").text(datas.bbt);
-        //$(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-text").find(".bbb").text(datas.bbb);
+        $(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-text").find(".trade_price").text(datas.trade);
     }
 
     let totalPrice = parseFloat($(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-title").attr("data-total-price"));
@@ -241,14 +254,14 @@ let viewTradeTicker3 = (datas) => {
     let accuratePrice = (datas.ask_bid == "ASK") ? datas.price : 0 - datas.price;
 
     let signalTemplate = `
-        <div class="col-3">
+        <div class="col-3 card-container">
             <div class="card text-center">
                 <div class="card-header">
                     [${datas.markets}]
                 </div>
                 <div class="card-body">
                     <h5 class="card-title" data-total-price="${accuratePrice}">${numberToKorean2(accuratePrice)}</h5>
-                    <p class="card-text text-secondary">RSI <span class="rsi">${datas.rsi}</span><!--&#9;|&#9;BB上 <span class="bbt">${datas.bbt}</span>&#9;|&#9;BB下 <span class="bbb">${datas.bbb}</span>--></p>
+                    <p class="card-text text-secondary">현재가<br><span class="trade_price">${datas.trade}</span><!--&#9;|&#9;BB上 <span class="bbt">${datas.bbt}</span>&#9;|&#9;BB下 <span class="bbb">${datas.bbb}</span>--></p>
                 </div>
                 <div class="card-footer text-muted">
                     <div class="d-flex progress">
@@ -285,9 +298,7 @@ let viewTradeTicker3 = (datas) => {
         let resultPrice = totalPrice + accuratePrice;
         $(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-title").attr("data-total-price", resultPrice);
         $(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-title").text(numberToKorean2(resultPrice));
-        $(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-text").find(".rsi").text(datas.rsi);
-        //$(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-text").find(".bbt").text(datas.bbt);
-        //$(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-text").find(".bbb").text(datas.bbb);
+        $(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-text").find(".trade_price").text(datas.trade);
     }
 
     let totalPrice = parseFloat($(document).find("#" + datas.code + "-Signal").closest(".card").find(".card-title").attr("data-total-price"));

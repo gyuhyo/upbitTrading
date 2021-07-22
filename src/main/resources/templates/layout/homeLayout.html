@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="setContainer(container)">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="/static/vender/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <!-- Custom styles for this template -->
+  <link href="/static/vender/css/simple-sidebar.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <script src="https://kit.fontawesome.com/24c1a5db21.js" crossorigin="anonymous"></script>
+  <style>
+
+    * {
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    body {
+      padding-bottom : 20px;
+      box-sizing: border-box;
+    }
+
+    #askBidSignal .card:not(:first-child) {
+      margin-top: 7px !important;
+    }
+
+    /*
+     *  STYLE 4
+     */
+
+    /*#upbitWhale::-webkit-scrollbar-track*/
+    /*{*/
+    /*    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);*/
+    /*    background-color: #212529;*/
+    /*}*/
+
+    #upbitWhale::-webkit-scrollbar,
+    #askBidSignal::-webkit-scrollbar
+    {
+      position: absolute;
+      right: 5px;
+      width: 5px;
+      /*background-color: #212529;*/
+    }
+
+    #upbitWhale::-webkit-scrollbar-thumb,
+    #askBidSignal::-webkit-scrollbar-thumb
+    {
+      background-color: #1b1d21;
+      background-image: -webkit-linear-gradient(45deg,
+      rgba(255, 255, 255, .2) 25%,
+      transparent 25%,
+      transparent 50%,
+      rgba(255, 255, 255, .2) 50%,
+      rgba(255, 255, 255, .2) 75%,
+      transparent 75%,
+      transparent);
+      border-radius: 50px;
+    }
+
+    #upbitWhale {
+      border-top-left-radius: 0px !important;
+      border-top-right-radius: 0px !important;
+    }
+
+    #upbitWhale li:first-child {
+      border-top-left-radius: 0px !important;
+      border-top-right-radius: 0px !important;
+    }
+  </style>
+  <title>Hello, world!</title>
+</head>
+<body class="bg-dark">
+<div aria-live="polite" aria-atomic="true" class="d-flex position-absolute justify-content-center align-items-center w-100 mt-2" style="z-index: -1" id="toast_container">
+  <!-- Then put toasts within -->
+  <div class="toast fade" id="toast1" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+      <img src="https://www.pngitem.com/pimgs/m/116-1166875_icon-megaphone-marketing-icon-transparent-background-hd-png.png" class="rounded me-2" style="width: 1.5em; height: 1.5em;" alt="...">
+      <strong class="me-auto">업비트! 큰 고래 알림!!!</strong>
+      <small>just Now!</small>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      toast message...
+    </div>
+  </div>
+</div>
+<div class="d-flex" id="wrapper">
+  <!-- Sidebar -->
+  <div class="bg-dark border-dark border-end" id="sidebar-wrapper">
+    <div class="sidebar-heading text-white">
+      <img src="https://image.flaticon.com/icons/png/512/2834/2834539.png" style="width: 1.5em; height: 1.5em;" />
+      <span>업비트 고래잡이</span>
+    </div>
+    <div class="list-group list-group-flush ">
+      <a href="/" class="list-group-item list-group-item-action bg-dark text-white">Dashboard</a>
+      <a href="/mock/mock_invest" class="list-group-item list-group-item-action bg-dark text-white">모의투자</a>
+      <a href="#" class="list-group-item list-group-item-action bg-dark text-white">Overview</a>
+      <a href="#" class="list-group-item list-group-item-action bg-dark text-white">Events</a>
+      <a href="#" class="list-group-item list-group-item-action bg-dark text-white">Profile</a>
+      <a href="#" class="list-group-item list-group-item-action bg-dark text-white">Status</a>
+    </div>
+  </div>
+  <!-- /#sidebar-wrapper -->
+
+  <!-- Page Content -->
+  <div id="page-content-wrapper">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-lg">
+      <button class="btn btn-secondary" id="menu-toggle">Toggle Menu</button>
+
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+          <li class="nav-item active">
+            <a class="nav-link text-white" href="#">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="#">Link</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link text-white dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Dropdown
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="#">Action</a>
+              <a class="dropdown-item" href="#">Another action</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div class="container-lg align-middle content">
+      <th:block th:replace = "${container}">
+      </th:block>
+      <footer></footer>
+    </div>
+  </div>
+</div>
+
+<!-- Menu Toggle Script -->
+<script>
+  $(() => {
+    $("#menu-toggle").click(function (e) {
+      e.preventDefault();
+      $("#wrapper").toggleClass("toggled");
+    });
+
+    $(".setModalBtn").click(() => {
+      cardSound = $(".whaleSoundChk").prop("checked");
+      $("#settingModal").modal("hide");
+    });
+
+    if (window.Notification) {
+      Notification.requestPermission();
+    }
+  });
+</script>
+</body>
+</th:block>
+</html>
